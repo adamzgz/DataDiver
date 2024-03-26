@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.info("Inicio de carga de archivo")
 
+
 # Realiza la carga de forma asincrona
 async def load_data(file: UploadFile):
     loop = asyncio.get_running_loop()
