@@ -1,0 +1,5 @@
+# Pendiente de añadir las versiones
+
+pyarrow
+pandas
+fastapi
