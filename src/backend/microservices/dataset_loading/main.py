@@ -1,12 +1,27 @@
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends, Security
+from fastapi.security.api_key import APIKeyHeader
 import shutil
 import os
 
 # Lanza la api 
 app = FastAPI()
 
-#Endpoint para subir un archivo, leerlo con pandas,
-#convertirlo a una tabla de Apache Arrow y enviarlo a un servicio destino
+# Configuración simple de seguridad basada en token, solo para desarrollo
+
+API_KEY = "tokencitotokencito"
+API_KEY_NAME = "api_token"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
+
+# Función para verificar el token de acceso
+async def get_api_key(api_key_header: str = Security(api_key_header)):
+    if api_key_header == API_KEY:
+        return True
+    else:
+        raise HTTPException(status_code=403, detail="Token de acceso inválido")
+    
+
+
+#Endpoint para subir un archivo y almacenarlo en el servidor
 
 @app.post("/upload-dataset/")
 async def upload_dataset(file: UploadFile = File(...)):
@@ -15,19 +30,18 @@ async def upload_dataset(file: UploadFile = File(...)):
     storage_path = "./files"
     file_location = f"{storage_path}/{file.filename}"
     
-        # Cambio la logica a guardar el archivo simplemente, sin llegar a leerlo.
-        # Dejo comentado el codigo anterior para referencia
-        # df = await load_dataset.load_data(file)  # función para cargar datos
-
-    if file.content_type == "text/csv" or file.content_type in ["application/vnd.ms-excel",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] or file.content_type == "application/json":
+    # Verificar que el archivo sea un CSV o un Excel o un JSON
+    if file.content_type in ["text/csv",
+                            "application/vnd.ms-excel",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/json"]:
         try:
         
             # Guardar archivo en el almacenamiento
             with open(file_location, "wb+") as file_object:
                 shutil.copyfileobj(file.file, file_object)
 
-            # Aqui se debe añadir la logica para notificar al servicio de destino
+            # Lugar para la lógica de notificación al servicio de destino
             
             # Por ahora, solo devolvemos la ruta del archivo
             return {"location": file_location}
@@ -36,7 +50,8 @@ async def upload_dataset(file: UploadFile = File(...)):
             print(e)
             raise HTTPException(status_code=500, detail=str(e))
     else:
-        raise Exception("Formato de archivo no soportado.")
+        raise HTTPException(status_code=400, detail="Formato de archivo no soportado.")
+
 
 
 
