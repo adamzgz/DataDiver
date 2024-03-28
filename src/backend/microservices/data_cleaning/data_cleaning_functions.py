@@ -30,6 +30,7 @@ def data_cleaning(df, options):
 
     if options.get('check_duplicates'):
         duplicates = df.duplicated().sum()
+        
         return duplicates
 
 

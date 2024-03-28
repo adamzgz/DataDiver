@@ -4,6 +4,7 @@ import os
 import load_dataset as ld
 import data_cleaning_functions as dcf
 from typing import Optional, List, Dict
+import numpy as np
 
 class CleaningRequest(BaseModel):
     file_name: str
@@ -30,7 +31,7 @@ async def apply_cleaning_operation(request: CleaningRequest):
 
     # Definir la ruta de almacenamiento y comprobar si el archivo existe
     storage_path = "/files"
-    file_location = f"{storage_path}/{request.file_name}"
+    file_location = os.path.join(storage_path, request.file_name)
 
     if not os.path.exists(file_location):
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
@@ -38,6 +39,9 @@ async def apply_cleaning_operation(request: CleaningRequest):
     try:
         df = await ld.load_data(file_location)
         result = dcf.data_cleaning(df, options)
+        if isinstance(result, np.int64):
+            result = int(result)  # Convierte np.int64 a int nativo de Python
         return {"message": "Operaciones aplicadas con éxito", "result": result}
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
