@@ -22,7 +22,7 @@ app = FastAPI()
 async def apply_cleaning_operation(file_name: str = Form(...), operation: str = Form(...)):
 
     # Definir la ruta de almacenamiento
-    storage_path = "./files"
+    storage_path = "/files"
     file_location = f"{storage_path}/{file_name}"
 
     # Compruebo si el archivo existe
