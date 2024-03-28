@@ -5,3 +5,6 @@ fastapi
 uvicorn
 python-multipart
 pyarrow
+python-dotenv
+httpx
+openpyxl

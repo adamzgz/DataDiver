@@ -1,42 +1,39 @@
 import pandas as pd
 from fastapi import UploadFile
-import asyncio
+import io
 import logging
 
 # Inicializa el logging
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.info("Inicio de carga de archivo")
 
-
-# Realiza la carga de forma asincrona
 async def load_data(file: UploadFile):
-    loop = asyncio.get_running_loop()
-
+    logger.info("Inicio de carga de archivo")
     try:
-
-        # Segun el tipo de archivo, se carga de una forma u otra
-
+        # Utiliza la API de UploadFile para leer el contenido del archivo
+        contents = await file.read()
+        # Dependiendo del tipo de archivo, decide cómo cargarlo en un DataFrame
         if file.content_type == "text/csv":
-            df = await loop.run_in_executor(None, pd.read_csv, file.file._file)
+            df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
             logger.info("Archivo csv cargado exitosamente")
 
         elif file.content_type in ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]:
-            df = await loop.run_in_executor(None, pd.read_excel, file.file._file)
+            df = pd.read_excel(io.BytesIO(contents))
             logger.info("Archivo excel cargado exitosamente")
 
         elif file.content_type == "application/json":
-            df = await loop.run_in_executor(None, pd.read_json, file.file._file)
+            df = pd.read_json(io.StringIO(contents.decode('utf-8')))
             logger.info("Archivo json cargado exitosamente")
 
         else:
             raise Exception("Formato de archivo no soportado.")
         
-    # Captura cualquier excepcion, la guarda y la lanza la lanza
     except Exception as error:
         logger.error(f"Error al cargar el archivo: {error}")
-        raise Exception(f"Error al cargar el archivo: {error}")
+        raise
 
-
+    finally:
+        # cierra el archivo subido después de usarlo
+        await file.close()
+    
     return df

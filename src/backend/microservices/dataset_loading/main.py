@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import pandas as pd
 from dotenv import load_dotenv
 import pyarrow as pa
@@ -19,17 +19,21 @@ app = FastAPI()
 #convertirlo a una tabla de Apache Arrow y enviarlo a un servicio destino
 
 @app.post("/upload-dataset/")
-
 async def upload_dataset(file: UploadFile = File(...), destination: str = Form(...)):
+    try:
+        df = await load_dataset.load_data(file)  # tu función para cargar datos
 
-    # Lee el archivo en un DataFrame de Pandas
-    df = await load_dataset.load_data(file)
+        # Agregar impresión de depuración para las columnas
+        print("Columnas del DataFrame:", df.columns)
+        print("¿Son únicas las columnas?:", df.columns.is_unique)
 
-    # Convierte el DataFrame a una tabla de Apache Arrow
-    table = pa.Table.from_pandas(df)
-
-    # Serializa la tabla a un buffer
-    buf = pa.ipc.serialize_table(table).to_pybytes()
+        # Convertir a tabla de PyArrow y serializar
+        table = pa.Table.from_pandas(df, preserve_index=False)
+        buf = pa.ipc.serialize_table(table).to_pybytes()
+    
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))
 
     # Diccionario de URLs de los servicios destino, se modifican en el archivo .env
     destinations = {

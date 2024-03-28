@@ -1,15 +1,15 @@
-# Usa una imagen oficial de Python como imagen base
+# 1. Usa una imagen oficial de Python como imagen base
 FROM python:3.10.13
 
-# Establece el directorio de trabajo en el contenedor
-WORKDIR /code
+# 2. Establece el directorio de trabajo en el contenedor
+WORKDIR /app
 
-# Copia los requisitos de dependencias y los instala
-COPY requirements.txt .
+# 3. Copia los requisitos de dependencias y los instala
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia el resto del código de tu aplicación
-COPY ./app /code/app
+# 4. Copia el resto del código de la aplicación
+COPY . .
 
-# Comando para ejecutar la aplicación usando Uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--reload"]
+# 5. Comando para ejecutar la aplicación usando Uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]
