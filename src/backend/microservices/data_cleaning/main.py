@@ -1,48 +1,43 @@
-# He modificado toda la logica de data_cleaning, ya que ahora se guardan los archivos en un contenedor compartido
-
-# Importamos las librerias
-
-from fastapi import FastAPI, HTTPException, Form
-import pandas as pd
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
 import os
 import load_dataset as ld
 import data_cleaning_functions as dcf
+from typing import Optional, List, Dict
 
-# Inicializo FastAPI
+class CleaningRequest(BaseModel):
+    file_name: str
+    check_duplicates: Optional[bool] = False
+    remove_duplicates: Optional[bool] = False
+    count_missing_values: Optional[bool] = False
+    treat_missing_values: Optional[str] = None
+    constant_value: Optional[float] = None
+    outliers: Optional[str] = None
+    normalization: Optional[str] = None
+    encoding: Optional[str] = None
+    drop_columns: Optional[List[str]] = None
+    show_info: Optional[bool] = False
+    change_data_type: Optional[Dict[str, str]] = None
+    string_operations: Optional[str] = None
+    regex_pattern: Optional[str] = None
+    regex_replacement: Optional[str] = None
+
 app = FastAPI()
 
-
-# Endpoint operacion de limpieza
-
 @app.post("/apply_cleaning")
+async def apply_cleaning_operation(request: CleaningRequest):
+    options = request.dict(exclude={'file_name'})
 
-# De momento recibe el nombre del archivo y la operacion a realizar, esto se cambiará para que reciba el id de usuario
-# y a partir de ahi se obtenga el archivo
-
-async def apply_cleaning_operation(file_name: str = Form(...), operation: str = Form(...)):
-
-    # Definir la ruta de almacenamiento
+    # Definir la ruta de almacenamiento y comprobar si el archivo existe
     storage_path = "/files"
-    file_location = f"{storage_path}/{file_name}"
+    file_location = f"{storage_path}/{request.file_name}"
 
-    # Compruebo si el archivo existe
     if not os.path.exists(file_location):
-
-        # Si no existe, lanzo un error 404
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
-    
-    # Si existe, cargo el archivo y aplico la operacion de limpieza
+
     try:
-        # Cargo el archivo usando la funcion de load_dataset
-        df = ld.load_data(file_location)
-
-        # Aplico la operacion de limpieza
-        result = dcf.data_cleaning(df, operation)
-
-        # Devuelvo el resultado
-        return result
-    
-    # Si hay algun error, lo imprimo y lanzo un error 500
-    except HTTPException as e:
-        print(e)
+        df = await ld.load_data(file_location)
+        result = dcf.data_cleaning(df, options)
+        return {"message": "Operaciones aplicadas con éxito", "result": result}
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
