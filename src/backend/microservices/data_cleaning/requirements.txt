@@ -1,5 +1,4 @@
 # Pendiente de añadir las versiones
-
 pyarrow
 pandas
 fastapi
@@ -7,3 +6,4 @@ uvicorn
 python-multipart
 scikit-learn
 pydantic
+numpy

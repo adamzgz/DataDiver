@@ -1,7 +1,7 @@
 # Importar librerias
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder 
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler 
 
 # Funcion para comprobar la opcion de limpieza seleccionada en el frontend
 
@@ -22,6 +22,17 @@ def remove_duplicates(df):
             return "No se han encontrado filas duplicadas"
     except Exception as error:
         return str(error)    
+    
+
+def normalize_min_max(df):
+    # Selecciona solo columnas numéricas
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    
+    # Aplica MinMaxScaler solo a las columnas numéricas
+    scaler = MinMaxScaler()
+    df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+    
+    return df
 
 
 def data_cleaning(df, options):
@@ -30,6 +41,7 @@ def data_cleaning(df, options):
 
     if options.get('check_duplicates'):
         duplicates = df.duplicated().sum()
+        
         return duplicates
 
 
@@ -42,6 +54,7 @@ def data_cleaning(df, options):
 
     if options.get('count_missing_values'):
         missing_values = df.isnull().sum()
+        missing_values = missing_values.to_dict()
         return missing_values
     
     # Tratamiento valores nulos
@@ -103,8 +116,7 @@ def data_cleaning(df, options):
             
     # Normalizacion entre 0 y 1 (KNN, Redes Neuronales)
     if options.get('normalization') == 'min_max':
-        for col in df.columns:
-            df[col] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())
+        df = normalize_min_max(df)
         return df
 
     
