@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  data_loading:
+    # Corrección aquí para reflejar el servicio correcto
+    build: .
+    ports:
+      - "8000:8000" # Puerto del host:puerto del contenedor
+    volumes:
+      - data_volume:/files/ # Monta el volumen compartido
+
+volumes:
+  data_volume:

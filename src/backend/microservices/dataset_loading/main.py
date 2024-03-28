@@ -28,7 +28,6 @@ async def upload_dataset(file: UploadFile = File(...)):
                 shutil.copyfileobj(file.file, file_object)
 
             # Aqui se debe añadir la logica para notificar al servicio de destino
-            
             # Por ahora, solo devolvemos la ruta del archivo
             return {"location": file_location}
         

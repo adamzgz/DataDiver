@@ -1,47 +1,48 @@
-from fastapi import FastAPI, Request, Depends, status, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-import pyarrow as pa
+# He modificado toda la logica de data_cleaning, ya que ahora se guardan los archivos en un contenedor compartido
+
+# Importamos las librerias
+
+from fastapi import FastAPI, HTTPException, Form
 import pandas as pd
-from typing import Optional
-from data_cleaning_functions import data_cleaning
+import os
+import load_dataset as ld
+import data_cleaning_functions as dcf
 
-# Guardado del dataframe
-# Pendiente de modificar a opciones mas robustas como una base de datos
-dataframes = {}
-
-# Autenticacion, pendiente de cambiar la logica
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-# Inicializacion de la API
+# Inicializo FastAPI
 app = FastAPI()
 
 
-# Logica para recibir el Dataframe
-@app.post("/receive-dataset/{user_id}")
-async def receive_dataset(request: Request, user_id: str = Depends(oauth2_scheme)):
-    buf = await request.body()
-    table = pa.ipc.deserialize_table(buf)
-    df = table.to_pandas()
+# Endpoint operacion de limpieza
 
-    # Guardamos el DataFrame usando el user_id como clave
-    dataframes[user_id] = df
+@app.post("/apply_cleaning")
 
-    return {"mensaje": "DataFrame recibido y almacenado."}
+# De momento recibe el nombre del archivo y la operacion a realizar, esto se cambiará para que reciba el id de usuario
+# y a partir de ahi se obtenga el archivo
 
-@app.post("/clean-dataset/{user_id}")
-async def clean_dataset(options: dict, user_id: str = Depends(oauth2_scheme)):
-    if user_id not in dataframes:
-        raise HTTPException(status_code=404, detail="DataFrame no encontrado, carga un dataframe antes")
+async def apply_cleaning_operation(file_name: str = Form(...), operation: str = Form(...)):
+
+    # Definir la ruta de almacenamiento
+    storage_path = "./files"
+    file_location = f"{storage_path}/{file_name}"
+
+    # Compruebo si el archivo existe
+    if not os.path.exists(file_location):
+
+        # Si no existe, lanzo un error 404
+        raise HTTPException(status_code=404, detail="Archivo no encontrado")
     
-    df = dataframes[user_id]
+    # Si existe, cargo el archivo y aplico la operacion de limpieza
+    try:
+        # Cargo el archivo usando la funcion de load_dataset
+        df = ld.load_data(file_location)
 
-    # Aplica la función de limpieza según las opciones recibidas
-    # Las opciones estan configuradas en data_cleaning_functions.py
+        # Aplico la operacion de limpieza
+        result = dcf.data_cleaning(df, operation)
+
+        # Devuelvo el resultado
+        return result
     
-    result = data_cleaning(df, options)
-
-    # Actualiza el DataFrame limpio en la "base de datos"
-    dataframes[user_id] = df
-
-    # Pendiente de modificar el return segun sea necesario
-    return {"mensaje": f"Proceso de {options} completado", "resultado": result}
+    # Si hay algun error, lo imprimo y lanzo un error 500
+    except HTTPException as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))

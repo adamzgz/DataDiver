@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  data_loading:
+    build: ./dataset_loading
+    ports:
+      - "8000:8000"
+    volumes:
+      - data_volume:/files/
+
+  data_cleaning:
+    build: ./data_cleaning
+    ports:
+      - "8001:8000"
+    volumes:
+      - data_volume:/files/
+
+volumes:
+  data_volume:
