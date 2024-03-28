@@ -43,6 +43,7 @@ def data_cleaning(df, options):
 
     if options.get('count_missing_values'):
         missing_values = df.isnull().sum()
+        missing_values = missing_values.to_dict()
         return missing_values
     
     # Tratamiento valores nulos
