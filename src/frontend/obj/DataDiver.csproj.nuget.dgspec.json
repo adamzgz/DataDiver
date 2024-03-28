@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\DataDiver.csproj": {}
+    "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {}
   },
   "projects": {
-    "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\DataDiver.csproj": {
+    "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\DataDiver.csproj",
+        "projectUniqueName": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
         "projectName": "DataDiver",
-        "projectPath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\DataDiver.csproj",
+        "projectPath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
         "packagesPath": "C:\\Users\\agazo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\obj\\",
+        "outputPath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\agazo\\AppData\\Roaming\\NuGet\\NuGet.Config",

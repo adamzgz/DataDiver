@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AvRDdaP0sbpNFI+mqHnEkFEpB9UXYRkZk4p5QSQA6qPpl16I4YxlWVRPjXBSYRjy/m8uiUpogR47v6rx78QuHg==",
+  "dgSpecHash": "J9TsMtWJdbzhHpvDfJ+JEn7Y3RI6uAxtsT70x1suSqMLPIceO3M1xNwmuybNP3uV1ktgG4Lj4NfiKavSUfuTGw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\DataDiver.csproj",
+  "projectFilePath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\agazo\\.nuget\\packages\\microsoft.aspnetcore.antiforgery\\2.2.0\\microsoft.aspnetcore.antiforgery.2.2.0.nupkg.sha512",
     "C:\\Users\\agazo\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
