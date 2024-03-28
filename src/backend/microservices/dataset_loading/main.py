@@ -1,53 +1,51 @@
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
-import pandas as pd
-from dotenv import load_dotenv
-import pyarrow as pa
-import httpx
-import load_dataset
+import shutil
 import os
-
-# Carga las variables de entorno
-
-# Carga las variables de entorno del archivo .env
-load_dotenv()
 
 # Lanza la api 
 app = FastAPI()
-
 
 #Endpoint para subir un archivo, leerlo con pandas,
 #convertirlo a una tabla de Apache Arrow y enviarlo a un servicio destino
 
 @app.post("/upload-dataset/")
-async def upload_dataset(file: UploadFile = File(...), destination: str = Form(...)):
-    try:
-        df = await load_dataset.load_data(file)  # tu función para cargar datos
-
-        # Agregar impresión de depuración para las columnas
-        print("Columnas del DataFrame:", df.columns)
-        print("¿Son únicas las columnas?:", df.columns.is_unique)
-
-        # Convertir a tabla de PyArrow y serializar
-        table = pa.Table.from_pandas(df, preserve_index=False)
-        buf = pa.ipc.serialize_table(table).to_pybytes()
+async def upload_dataset(file: UploadFile = File(...)):
+   
+    # Definir la ruta de almacenamiento
+    storage_path = "./files"
+    file_location = f"{storage_path}/{file.filename}"
     
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=str(e))
+        # Cambio la logica a guardar el archivo simplemente, sin llegar a leerlo.
+        # Dejo comentado el codigo anterior para referencia
+        # df = await load_dataset.load_data(file)  # función para cargar datos
 
-    # Diccionario de URLs de los servicios destino, se modifican en el archivo .env
-    destinations = {
-        "data_cleaning": os.getenv("DATA_CLEANING_URL"),
-        "EDA_analysis": os.getenv("EDA_ANALYSIS_URL"),
-        "data_modeling": os.getenv("DATA_MODELING_URL"),
-        "model_prediction": os.getenv("MODEL_PREDICTION_URL")
-    }
+    if file.content_type == "text/csv" or file.content_type in ["application/vnd.ms-excel",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] or file.content_type == "application/json":
+        try:
+        
+            # Guardar archivo en el almacenamiento
+            with open(file_location, "wb+") as file_object:
+                shutil.copyfileobj(file.file, file_object)
 
-    # Comprueba que el destino es correcto
-    if destination not in destinations:
-        return {"error": "Destino desconocido"}
+            # Aqui se debe añadir la logica para notificar al servicio de destino
+            
+            # Por ahora, solo devolvemos la ruta del archivo
+            return {"location": file_location}
+        
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=500, detail=str(e))
+    else:
+        raise Exception("Formato de archivo no soportado.")
 
-    # Envía el buffer serializado al servicio que hizo la peticion
-    response = httpx.post(destinations[destination], content=buf)
 
-    return {"message": f"Dataset enviado a {destination}", "response": response.text}
+
+
+
+        
+
+
+
+    
+
+

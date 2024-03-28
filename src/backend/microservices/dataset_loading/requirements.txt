@@ -4,7 +4,5 @@ pandas # Pandas para crear los dataframes a partir de los datos de la API
 fastapi
 uvicorn
 python-multipart
-pyarrow
-python-dotenv
 httpx
 openpyxl
