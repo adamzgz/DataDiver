@@ -1,5 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Configura el servidor para escuchar en el puerto 80 y en todas las interfaces de red
+builder.WebHost.UseUrls("http://*:80");
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 
@@ -13,7 +16,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Temporarily comment out app.UseHttpsRedirection(); if troubleshooting Docker deployment
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
