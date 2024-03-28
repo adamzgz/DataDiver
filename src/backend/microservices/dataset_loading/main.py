@@ -27,7 +27,7 @@ async def get_api_key(api_key_header: str = Security(api_key_header)):
 async def upload_dataset(file: UploadFile = File(...)):
    
     # Definir la ruta de almacenamiento
-    storage_path = "./files"
+    storage_path = "/files"
     file_location = f"{storage_path}/{file.filename}"
     
     # Verificar que el archivo sea un CSV o un Excel o un JSON
