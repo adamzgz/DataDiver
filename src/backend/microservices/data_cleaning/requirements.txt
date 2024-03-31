@@ -8,3 +8,6 @@ scikit-learn
 pydantic
 numpy
 redis
+uuid
+mysql.connector
+python-dotenv
