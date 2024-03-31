@@ -16,8 +16,6 @@ from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Estructura para mantener el estado de los datasets en memoria
-datasets_state = {}
 
 class CleaningRequest(BaseModel):
     file_name: str
