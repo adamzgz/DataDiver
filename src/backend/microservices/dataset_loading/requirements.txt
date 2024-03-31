@@ -6,3 +6,6 @@ uvicorn
 python-multipart
 httpx
 openpyxl
+redis
+pickle
+pyarrow
