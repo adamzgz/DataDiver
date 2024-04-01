@@ -1,24 +1,10 @@
 import uuid
-import mysql.connector
-from config import DB_HOST, DB_USER, DB_PASS, DB_NAME
-
-# -----------------------------#
-# Funciones auxiliares
-# -----------------------------#
+from ..database import connect_to_database
 
 # Función para generar un ID único para cada dataset
 def generate_data_id() -> str:
     return str(uuid.uuid4())
 
-# Función para conectar a la base de datos
-def connect_to_database():
-
-    return mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASS,
-        database=DB_NAME
-    )
 
 # Función para insertar un nuevo dataset en la base de datos
 def insert_file_mapping(data_id, file_path):
