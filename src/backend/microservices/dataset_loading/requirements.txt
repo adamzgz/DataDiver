@@ -1,14 +1,9 @@
 # Pendiente de añadir las versiones
-
-pandas # Pandas para crear los dataframes a partir de los datos de la API
 fastapi
 uvicorn
 python-multipart
 httpx
 openpyxl
-redis
-pickle
-pyarrow
 uuid
 mysql.connector
 python-dotenv
