@@ -1,15 +1,11 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-import os
-import load_dataset as ld
-import data_cleaning_functions as dcf
+from pydantic import BaseModel
+import utils.load_dataset as ld
+import utils.data_cleaning_functions as dcf
 from typing import Optional, List, Dict
 import numpy as np
 import logging
-import pandas as pd
-
-from dotenv import load_dotenv
-import aux_functions as af
+import utils.dataset_utils as du
 
 
 # Inicializa el logging
@@ -51,7 +47,7 @@ async def apply_cleaning_operation(request: CleaningRequest):
     logger.info(f"Obteniendo dataset con ID: {request.file_name}")
 
     try:
-        file_location = af.get_file_path(request.file_name)
+        file_location = du.get_file_path(request.file_name)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
     
@@ -81,8 +77,8 @@ async def apply_cleaning_operation(request: CleaningRequest):
     if file_path.endswith("_cleaned.csv"):
         try:
 
-            data_id = af.generate_data_id()
-            af.insert_file_mapping(data_id, file_path)
+            data_id = du.generate_data_id()
+            du.insert_file_mapping(data_id, file_path)
             logger.info(f"Dataset limpio insertado en la base de datos con ID: {data_id}")
             return {"message": message, "data_id": data_id}
         
