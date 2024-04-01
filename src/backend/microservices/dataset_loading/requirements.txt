@@ -9,3 +9,7 @@ openpyxl
 redis
 pickle
 pyarrow
+uuid
+mysql.connector
+python-dotenv
+logging

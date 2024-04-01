@@ -7,9 +7,9 @@ from typing import Optional, List, Dict
 import numpy as np
 import logging
 import pandas as pd
-import uuid
-import mysql.connector
+
 from dotenv import load_dotenv
+import aux_functions as af
 
 
 # Inicializa el logging
@@ -38,58 +38,6 @@ class CleaningRequest(BaseModel):
 # Inicializa la aplicación FastAPI
 app = FastAPI()
 
-# Carga las variables de entorno desde `.env`
-load_dotenv()
-
-# Accede a las variables de entorno
-DB_HOST = os.getenv("DB_HOST")
-DB_USER = os.getenv("DB_USER")
-DB_PASS = os.getenv("DB_PASS")
-DB_NAME = os.getenv("DB_NAME")
-
-# -----------------------------#
-# Funciones auxiliares
-# -----------------------------#
-
-# Función para generar un ID único para cada dataset
-def generate_data_id() -> str:
-    return str(uuid.uuid4())
-
-# Función para conectar a la base de datos
-def connect_to_database():
-    return mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASS,
-        database=DB_NAME
-    )
-
-# Función para insertar un nuevo dataset en la base de datos
-def insert_file_mapping(data_id, file_path):
-    db = connect_to_database()
-    cursor = db.cursor()
-    cursor.execute(
-        "INSERT INTO data_files (data_id, file_path) VALUES (%s, %s)",
-        (data_id, file_path)
-    )
-    db.commit()
-    cursor.close()
-    db.close()
-
-# Función para obtener la ruta de un dataset a partir de su ID
-def get_file_path(data_id):
-    db = connect_to_database()
-    cursor = db.cursor()
-    try:
-        cursor.execute("SELECT file_path FROM data_files WHERE data_id = %s", (data_id,))
-        result = cursor.fetchone()
-        if result:
-            return result[0]
-        else:
-            raise FileNotFoundError(f"Fichero no encontrado en el data id: {data_id}")
-    finally:
-        cursor.close()
-        db.close()
 
 # Endpoints
 
@@ -103,7 +51,7 @@ async def apply_cleaning_operation(request: CleaningRequest):
     logger.info(f"Obteniendo dataset con ID: {request.file_name}")
 
     try:
-        file_location = get_file_path(request.file_name)
+        file_location = af.get_file_path(request.file_name)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
     
@@ -133,8 +81,8 @@ async def apply_cleaning_operation(request: CleaningRequest):
     if file_path.endswith("_cleaned.csv"):
         try:
 
-            data_id = generate_data_id()
-            insert_file_mapping(data_id, file_path)
+            data_id = af.generate_data_id()
+            af.insert_file_mapping(data_id, file_path)
             logger.info(f"Dataset limpio insertado en la base de datos con ID: {data_id}")
             return {"message": message, "data_id": data_id}
         
