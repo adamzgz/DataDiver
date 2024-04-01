@@ -7,4 +7,3 @@ openpyxl
 uuid
 mysql.connector
 python-dotenv
-logging

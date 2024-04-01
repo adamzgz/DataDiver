@@ -4,7 +4,7 @@ import os
 import logging
 from typing import List
 from pydantic import BaseModel
-import aux_functions as af
+import utils.dataset_utils as du
 
 # Inicializa el logging
 logging.basicConfig(level=logging.INFO)
@@ -37,7 +37,7 @@ async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: 
     file_location = f"{storage_path}/{file.filename}"
 
     # Verificar si el archivo ya existe
-    existing_file = af.check_file_exists(user_id, file.filename)
+    existing_file =du.check_file_exists(user_id, file.filename)
 
     # Si el archivo ya existe y no se ha confirmado la sobrescritura, devuelve un mensaje para confirmar
     if existing_file and not overwrite:
@@ -52,12 +52,12 @@ async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: 
 
             # Si estamos sobreescribiendo, actualizamos la entrada existente en lugar de crear una nueva
             if existing_file:
-                af.update_file_mapping(user_id, file.filename, file_location) # Falta implementar esta función
+                du.update_file_mapping(user_id, file.filename, file_location) # Falta implementar esta función
 
             # Si no estamos sobreescribiendo, creamos una nueva entrada
             else:
-                data_id = af.generate_data_id()
-                af.insert_file_mapping(data_id, file_location)
+                data_id = du.generate_data_id()
+                du.insert_file_mapping(data_id, file_location)
 
             message = "Archivo subido correctamente"
 
@@ -75,7 +75,7 @@ async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: 
 async def list_datasets_for_user(user_id: str):
 
     # Obtener la lista de datasets del usuario
-    datasets = af.get_files_list(user_id)
+    datasets = du.get_files_list(user_id)
 
     # Si no hay datasets, devolver un error 404
     if not datasets:
