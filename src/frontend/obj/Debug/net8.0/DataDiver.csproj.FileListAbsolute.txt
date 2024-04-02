@@ -228,3 +228,5 @@ E:\DataDiver\DataDiver\src\frontend\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.W
 E:\DataDiver\DataDiver\src\frontend\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\DataDiver\DataDiver\src\frontend\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\DataDiver\DataDiver\src\frontend\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\DataDiver\DataDiver\src\frontend\bin\Debug\net8.0\MySqlConnector.dll
+E:\DataDiver\DataDiver\src\frontend\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll

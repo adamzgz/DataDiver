@@ -11,7 +11,7 @@ namespace DataDiver.Models
         public string Contrasena { get; set; } // Hash de la contrase�a del usuario
 
         // El tama�o del salt y del hash son espec�ficos del algoritmo utilizado.
-        private const int SaltSize = 16;
+     /*   private const int SaltSize = 16;
         private const int HashSize = 20;
         private const int Iterations = 10000; // N�mero de iteraciones.
 
@@ -81,6 +81,6 @@ namespace DataDiver.Models
                 }
                 return true;
             }
-        }
+        }*/
     }
 }
