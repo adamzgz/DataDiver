@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {}
+    "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {}
   },
   "projects": {
-    "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {
+    "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
+        "projectUniqueName": "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
         "projectName": "DataDiver",
-        "projectPath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
+        "projectPath": "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
         "packagesPath": "C:\\Users\\agazo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\agazo\\Desktop\\DataDiver\\DataDiver\\src\\frontend\\obj\\",
+        "outputPath": "E:\\DataDiver\\DataDiver\\src\\frontend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\agazo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -48,6 +48,16 @@
             "Microsoft.AspNetCore.Mvc.Razor": {
               "target": "Package",
               "version": "[2.2.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.3, )"
             }
           },
           "imports": [

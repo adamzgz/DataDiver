@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\frontend",
+    "\\src\\frontend\\DAL",
+    "\\src\\frontend\\Models",
+    "\\src\\frontend\\Pages",
+    "\\src\\frontend\\Properties",
+    "\\src\\frontend\\Services"
+  ],
+  "SelectedNode": "\\src\\frontend\\Pages\\Error.cshtml",
+  "PreviewInSolutionExplorer": false
+}
