@@ -69,7 +69,7 @@ async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: 
     else:
         raise HTTPException(status_code=400, detail="Formato de archivo no soportado.")
 
-
+    
 
 @app.get("/list_datasets/{user_id}", response_model=List[Dataset])
 async def list_datasets_for_user(user_id: str):
@@ -79,7 +79,7 @@ async def list_datasets_for_user(user_id: str):
 
     # Si no hay datasets, devolver un error 404
     if not datasets:
-        raise HTTPException(status_code=404, detail="No se han encontrado datasets almacenados")
+        raise HTTPException(status_code='nabo', detail="No se han encontrado datasets almacenados")
     
     # Si hay datasets, devolver una lista con los IDs y nombres de los archivos
     return [{"data_id": data_id, "file_name": file_path.split("/")[-1]} for data_id, file_path in datasets]
