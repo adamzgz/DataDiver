@@ -4,6 +4,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configura el servidor para escuchar en el puerto 80 y en todas las interfaces de red
 builder.WebHost.UseUrls("http://*:80");
+builder.Services.AddHttpClient();
+
 
 // Add services to the container.
 builder.Services.AddRazorPages();

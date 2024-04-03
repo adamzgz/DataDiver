@@ -1,10 +1,56 @@
-﻿@page "/index"
+﻿@page "Index"
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <div class="text-center">
+                <h1 class="display-4">Welcome to DataDiver</h1>
+                <p>Explore the ocean of data with ease.</p>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                <input type="file" id="fileUpload" name="UploadedFile" onchange="showFileName()" style="display:none;">
+                <label for="fileUpload" class="btn btn-primary">Elegir Archivo</label>
+                <span id="fileName" class="ml-2"></span>
+                <button type="submit" class="btn btn-primary btn-block">Subir Archivo</button>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script>
+    function showFileName() {
+        var fileUpload = document.getElementById('fileUpload');
+        var fileNameDisplay = document.getElementById('fileName');
+        if (fileUpload.files.length > 0) {
+            var fileName = fileUpload.files[0].name;
+            fileNameDisplay.textContent = fileName;
+        }
+    }
+</script>
+
+@{
+    var errorMessage = TempData["ErrorMessage"] as string;
+    var successMessage = TempData["SuccessMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <script>
+        window.onload = function() {
+            alert("@errorMessage");
+        };
+    </script>
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <script>
+        window.onload = function() {
+            alert("@successMessage");
+        };
+    </script>
+}
