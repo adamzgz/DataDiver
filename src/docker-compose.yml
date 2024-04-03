@@ -14,5 +14,10 @@ services:
     volumes:
       - data_volume:/files/
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "8002:80"
+
 volumes:
   data_volume:
