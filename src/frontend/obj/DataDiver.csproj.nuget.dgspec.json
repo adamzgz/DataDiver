@@ -1,32 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {}
+    "D:\\LOYOLA\\GitHub\\Jarkillo\\Desarrollo en Python\\DataDiver\\src\\frontend\\DataDiver.csproj": {}
   },
   "projects": {
-    "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj": {
+    "D:\\LOYOLA\\GitHub\\Jarkillo\\Desarrollo en Python\\DataDiver\\src\\frontend\\DataDiver.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
+        "projectUniqueName": "D:\\LOYOLA\\GitHub\\Jarkillo\\Desarrollo en Python\\DataDiver\\src\\frontend\\DataDiver.csproj",
         "projectName": "DataDiver",
-        "projectPath": "E:\\DataDiver\\DataDiver\\src\\frontend\\DataDiver.csproj",
-        "packagesPath": "C:\\Users\\agazo\\.nuget\\packages\\",
-        "outputPath": "E:\\DataDiver\\DataDiver\\src\\frontend\\obj\\",
+        "projectPath": "D:\\LOYOLA\\GitHub\\Jarkillo\\Desarrollo en Python\\DataDiver\\src\\frontend\\DataDiver.csproj",
+        "packagesPath": "C:\\Users\\sopor\\.nuget\\packages\\",
+        "outputPath": "D:\\LOYOLA\\GitHub\\Jarkillo\\Desarrollo en Python\\DataDiver\\src\\frontend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\agazo\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\sopor\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
-            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -34,16 +31,10 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net8.0": {
-          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.Mvc.Razor": {
               "target": "Package",
@@ -64,26 +55,12 @@
               "version": "[8.0.2, )"
             }
           },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.422\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win7-x86": {
+          "#import": []
         }
       }
     }
