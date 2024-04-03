@@ -5,6 +5,8 @@ import logging
 from typing import List
 from pydantic import BaseModel
 import utils.dataset_utils as du
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # Inicializa el logging
 logging.basicConfig(level=logging.INFO)
@@ -18,6 +20,17 @@ class Dataset(BaseModel):
     data_id: str
     file_name: str
 
+
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite todas las origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos
+    allow_headers=["*"],  # Permite todos los headers
+)
+
+
 #Endpoint para subir un archivo y almacenarlo en el servidor (Falta implementar el LOGGING)
 
 @app.post("/upload-dataset/{user_id}")
@@ -26,10 +39,13 @@ class Dataset(BaseModel):
 # Pendiente de añadir que se envie tambien un nombre para el archivo, en vez de usar el que tiene el archivo por defecto
 async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: bool = False):
 
+    logger.info(f"Subiendo archivo {file.filename} para el usuario {user_id}")
     # Ruta donde se almacenarán los archivos
     storage_path = f"/files/{user_id}"
 
+
     # Crear la carpeta si no existe
+    logger.info(f"Creando carpeta de almacenamiento en {storage_path}")
     if not os.path.exists(storage_path):
         os.makedirs(storage_path)
 
@@ -67,7 +83,8 @@ async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al guardar el archivo: {e}")
     else:
-        raise HTTPException(status_code=400, detail="Formato de archivo no soportado.")
+        # Devuelve un error mostrando el formato del archivo, es decir, su extension
+        raise HTTPException(status_code=400, detail=f"Formato de archivo no soportado. el archivo es {file.content_type}")
 
     
 

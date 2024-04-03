@@ -29,15 +29,20 @@ public class IndexModel : PageModel
                 var httpClient = _httpClientFactory.CreateClient();
                 var form = new MultipartFormDataContent();
 
-                // Añadir el archivo
+
+                // Añadir el archivo con su Content-Type
                 var streamContent = new StreamContent(UploadedFile.OpenReadStream());
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(UploadedFile.ContentType);
                 form.Add(streamContent, "file", UploadedFile.FileName);
 
-                // Añadir el campo overwrite como un valor de cadena, ya que todo en MultipartFormDataContent es tratado como cadena
+                // Añadir el campo overwrite
                 form.Add(new StringContent("false"), "overwrite");
 
-                var userId = "1"; // Asegúrate de que el userId es obtenido o definido correctamente
+                var userId = "1"; // Asegura que el userId sea correcto
                 var response = await httpClient.PostAsync($"http://data_loading:8000/upload-dataset/{userId}", form);
+
+
+
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -65,4 +70,7 @@ public class IndexModel : PageModel
         }
     }
 
+
+
 }
+
