@@ -29,6 +29,7 @@ public class IndexModel : PageModel
                 var httpClient = _httpClientFactory.CreateClient();
                 var form = new MultipartFormDataContent();
 
+
                 // Añadir el archivo con su Content-Type
                 var streamContent = new StreamContent(UploadedFile.OpenReadStream());
                 streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(UploadedFile.ContentType);
@@ -39,6 +40,7 @@ public class IndexModel : PageModel
 
                 var userId = "1"; // Asegura que el userId sea correcto
                 var response = await httpClient.PostAsync($"http://data_loading:8000/upload-dataset/{userId}", form);
+
 
 
 
@@ -68,4 +70,7 @@ public class IndexModel : PageModel
         }
     }
 
+
+
 }
+
