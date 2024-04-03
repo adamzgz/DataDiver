@@ -14,8 +14,5 @@ services:
     volumes:
       - data_volume:/files/
 
-  services:
-
-
 volumes:
   data_volume:

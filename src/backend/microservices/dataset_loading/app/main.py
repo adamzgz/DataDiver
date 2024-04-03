@@ -75,11 +75,12 @@ async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: 
 async def list_datasets_for_user(user_id: str):
 
     # Obtener la lista de datasets del usuario
+    logger.info(f"Obteniendo datasets para el usuario {user_id}")
     datasets = du.get_files_list(user_id)
 
     # Si no hay datasets, devolver un error 404
     if not datasets:
-        raise HTTPException(status_code='nabo', detail="No se han encontrado datasets almacenados")
+        raise HTTPException(status_code=404, detail="No se han encontrado datasets almacenados")
     
     # Si hay datasets, devolver una lista con los IDs y nombres de los archivos
     return [{"data_id": data_id, "file_name": file_path.split("/")[-1]} for data_id, file_path in datasets]

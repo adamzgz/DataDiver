@@ -1,5 +1,11 @@
 import uuid
-from ..database import connect_to_database
+from database import connect_to_database
+import logging
+
+# Inicializa el logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 # Función para generar un ID único para cada dataset
 def generate_data_id() -> str:
@@ -20,14 +26,19 @@ def insert_file_mapping(data_id, file_path):
 
 # Función para obtener la ruta de un dataset a partir de su ID
 def get_file_path(data_id):
+    logger.info(f"Obteniendo ruta del archivo para el data_id: {data_id}")
     db = connect_to_database()
     cursor = db.cursor()
     try:
+        logger.info("Ejecutando query para obtener la ruta del archivo")
         cursor.execute("SELECT file_path FROM data_files WHERE data_id = %s", (data_id,))
+        logger.info("Obteniendo resultado de la query")
         result = cursor.fetchone()
         if result:
+            logger.info(f"Ruta del archivo encontrada: {result[0]}")
             return result[0]
         else:
+            logger.error(f"Archivo no encontrado en el data id: {data_id}")
             raise FileNotFoundError(f"Fichero no encontrado en el data id: {data_id}")
     finally:
         cursor.close()
@@ -35,15 +46,21 @@ def get_file_path(data_id):
 
 # Funcion para obtener listado de archivos de la base de datos
 def get_files_list(user_id):
+    logger.info(f"Obteniendo lista de archivos para el usuario: {user_id}")
+    logger.info("Conectando a la base de datos")
+
     db = connect_to_database()
+    logger.info("Conexión establecida")
     cursor = db.cursor()
+    logger.info("Creando cursor para ejecutar query")
     cursor.execute("""
         SELECT data_files.data_id, data_files.file_path 
         FROM user_datasets 
         JOIN data_files ON user_datasets.data_id = data_files.data_id 
         WHERE user_datasets.user_id = %s
     """, (user_id,))
-
+    
+    logger.info("Query ejecutada")
     datasets = cursor.fetchall()
     cursor.close()
     db.close()
