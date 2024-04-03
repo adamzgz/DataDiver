@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DataDiver")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+94eb038a4292f4d15aababc799269e7dba5bb96b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+283fcdf4130a44e542e4d2ce4886e373e3c8428a")]
 [assembly: System.Reflection.AssemblyProductAttribute("DataDiver")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DataDiver")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

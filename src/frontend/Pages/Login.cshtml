@@ -1,0 +1,14 @@
+@page "/"
+@model LoginModel
+
+<form method="post">
+    <div class="form-group">
+        <label for="CorreoElectronico">Correo electronico</label>
+        <input type="email" class="form-control" asp-for="CorreoElectronico" required>
+    </div>
+    <div class="form-group">
+        <label for="Contrasena">Contraseña</label>
+        <input type="password" class="form-control" asp-for="Contrasena" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Iniciar sesi�n</button>
+</form>
