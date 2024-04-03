@@ -34,7 +34,7 @@
 
 @{
     var errorMessage = TempData["ErrorMessage"] as string;
-    var successMessage = TempData["SuccessMessage"] as string;
+    var successMessage = TempData["Message"] as string;
 }
 
 @if (!string.IsNullOrEmpty(errorMessage))

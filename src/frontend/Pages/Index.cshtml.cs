@@ -28,12 +28,19 @@ public class IndexModel : PageModel
             {
                 var httpClient = _httpClientFactory.CreateClient();
                 var form = new MultipartFormDataContent();
-                var streamContent = new StreamContent(UploadedFile.OpenReadStream());
-                form.Add(streamContent, "file", UploadedFile.FileName);
-                form.Add(new StringContent("False"), "overwrite");
 
-                var userId = "1"; // AQUI EL ID DE USUARIO
+                // Añadir el archivo con su Content-Type
+                var streamContent = new StreamContent(UploadedFile.OpenReadStream());
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(UploadedFile.ContentType);
+                form.Add(streamContent, "file", UploadedFile.FileName);
+
+                // Añadir el campo overwrite
+                form.Add(new StringContent("false"), "overwrite");
+
+                var userId = "1"; // Asegura que el userId sea correcto
                 var response = await httpClient.PostAsync($"http://data_loading:8000/upload-dataset/{userId}", form);
+
+
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -42,21 +49,23 @@ public class IndexModel : PageModel
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "No se ha podido subir el archivo.";
+                    // Para un manejo más detallado de errores, podrías querer leer la respuesta del servidor
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    TempData["ErrorMessage"] = $"No se ha podido subir el archivo. Detalles: {errorResponse}";
                     return RedirectToPage("/Index");
                 }
             }
             else
             {
                 TempData["ErrorMessage"] = "No se ha seleccionado ningún archivo.";
+                return RedirectToPage("/Index");
             }
         }
         catch (Exception e)
         {
-            TempData["ErrorMessage"] = "Ha ocurrido un problema.";
+            TempData["ErrorMessage"] = $"Ha ocurrido un problema. Detalles: {e.Message}";
             return RedirectToPage("/Index");
         }
-
-        return RedirectToPage("/Index");
     }
+
 }

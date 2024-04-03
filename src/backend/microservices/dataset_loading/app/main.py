@@ -83,7 +83,8 @@ async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al guardar el archivo: {e}")
     else:
-        raise HTTPException(status_code=400, detail="Formato de archivo no soportado.")
+        # Devuelve un error mostrando el formato del archivo, es decir, su extension
+        raise HTTPException(status_code=400, detail=f"Formato de archivo no soportado. el archivo es {file.content_type}")
 
     
 
