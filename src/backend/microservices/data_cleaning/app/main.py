@@ -47,14 +47,21 @@ async def apply_cleaning_operation(request: CleaningRequest):
     logger.info(f"Obteniendo dataset con ID: {request.file_name}")
 
     try:
+        logger.info(f"Buscando dataset en la base de datos con ID: {request.file_name}")
         file_location = du.get_file_path(request.file_name)
+        logger.info(f"Dataset encontrado en la base de datos, ubicación: {file_location}")
+        data_id = request.file_name
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
     
     try:
+        logger.info(f"Cargando dataset con ID: {request.file_name}")
         df = await ld.load_data(file_location)
-        file_path, message = dcf.data_cleaning(df, options)
-        logger.info(f"Funcion Datacleaning completa, enviando resultado fuera de la API, Dataset ID: {request.file_name}")
+        logger.info(f"Dataset cargado con éxito, aplicando operaciones de limpieza")
+        file_path, message = dcf.data_cleaning(df, options, file_location)
+
+        logger.info(f"Funcion Data cleaning completa, enviando resultado fuera de la API, Dataset ID: {request.file_name}")
+        logger.info(f"Resultado: {file_path}, {message}")
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -62,6 +69,7 @@ async def apply_cleaning_operation(request: CleaningRequest):
 
     # Si el resultado es int64 o float64 se transforma a tipo nativo de Python (No deberia dar el caso: DEBUG)
     if isinstance(message, np.int64) or isinstance(message, np.float64):
+        logger.info("Número Numpy detectado, convirtiendo a tipo nativo python")
         try:
             logger.info("Número Numpy detectado, convirtiendo a tipo nativo python")
             # Convierte np.int64 o np.float64 a tipos nativos de Python
@@ -69,12 +77,16 @@ async def apply_cleaning_operation(request: CleaningRequest):
             message = message.item()
             logger.info("Número Numpy convertido a tipo nativo")
 
+            return {"message": message, "data_id": data_id}
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
-    
+
+        
     # Si el file_path recibido es *_cleaned.csv, se inserta en la base de datos
         
     if file_path.endswith("_cleaned.csv"):
+        logger.info(f"Dataset limpio detectado, insertando en la base de datos")
         try:
 
             data_id = du.generate_data_id()
@@ -84,7 +96,12 @@ async def apply_cleaning_operation(request: CleaningRequest):
         
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+        
+    # Si el resultado es un diccionario, se transforma para poder ser enviado
+    
+    
+    logger.info(f"Dataset limpio no detectado, retornando mensaje")
 
-    return {data_id, message}
+    return {"data_id": data_id, "message": message}
     
  

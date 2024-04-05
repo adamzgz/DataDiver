@@ -80,9 +80,9 @@ def remove_duplicates(df):
 
             return df, message
         else: 
-            return "No se han encontrado filas duplicadas"
+            return df, "No se han encontrado filas duplicadas"
     except Exception as error:
-        return str(f'Error eliminando datos duplicados{error}')    
+        return df, str(f'Error eliminando datos duplicados{error}')    
 
 # Funcion para normalizar un DataFrame utilizando MinMaxScaler
 def normalize_min_max(df):
@@ -228,10 +228,10 @@ def treat_missing_values(df, method):
                 df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
             
             except Exception as error:
-                return str(f'Error imputando valores nulos con la media: {error}')
+                return df, str(f'Error imputando valores nulos con la media: {error}')
             
             logger.info("Media Imputada")
-            return df
+            return df, str(f'Valores nulos imputados con la media')
     
         # Imputa la mediana, si el método es 'median'
         elif method == 'median':
@@ -386,7 +386,7 @@ def data_cleaning(df, options, file_path):
         # lanzamos la funcion de tratamiento de valores nulos
         logger.info("Tratando valores nulos")
         try:
-            df = treat_missing_values(df, method)
+            df,message = treat_missing_values(df, method)
         
         except Exception as error:
             return str(f'Error tratando valores nulos: {error}')

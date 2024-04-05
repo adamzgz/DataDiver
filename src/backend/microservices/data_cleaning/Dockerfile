@@ -1,14 +1,21 @@
 # 1. Usa una imagen oficial de Python como imagen base
-FROM python:3.10.13
+FROM python:3.10
 
 # 2. Establece el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# 4. Copia el resto del código de la aplicación
-COPY . .
+# Copy the requirements.txt file into the container at /app
+COPY requirements.txt .
+
+# Install the Python dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 
+# Copy the contents of the local app directory to /app inside the container
+COPY app/ .
 
-# 5. Comando para ejecutar la aplicación usando Uvicorn
+# Expose port 8000 for the application
+EXPOSE 8001
+
+# Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]

@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 # Carga las variables de entorno al inicio del programa
-load_dotenv()
+load_dotenv('token.env')
 
 # Accede a las variables de entorno y las asigna
 DB_HOST = os.getenv("DB_HOST")

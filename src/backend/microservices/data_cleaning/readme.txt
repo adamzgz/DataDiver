@@ -55,8 +55,19 @@ JSON DE prueba
 
 JSON de ejemplo:
 
+[
+  {
+    "data_id": "ad8f15b1-3635-41e8-a672-dcb384ef8cb1",
+    "file_name": "test.csv"
+  },
+  {
+    "data_id": "b5302e99-0f40-4da9-aeeb-f151abea30ad",
+    "file_name": "diabetes.csv"
+  }
+]
+
 {
-  "file_name": "train.csv",
+  "file_name": "b5302e99-0f40-4da9-aeeb-f151abea30ad"
   "check_duplicates": true,
   "remove_duplicates": true,
   "count_missing_values": true,
@@ -73,4 +84,13 @@ JSON de ejemplo:
   "string_operations": "upper",
   "regex_pattern": "^abc",
   "regex_replacement": "def"
+}
+
+
+PRUEBAS
+
+{
+  "file_name": "b5302e99-0f40-4da9-aeeb-f151abea30ad",
+  "treat_missing_values": "mean"
+
 }
