@@ -2,7 +2,7 @@ import logging
 import mysql.connector
 from config import DB_HOST, DB_USER, DB_PASS, DB_NAME
 
-logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger(__name__)
 
 # Función para conectar a la base de datos
