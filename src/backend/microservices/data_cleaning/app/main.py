@@ -8,6 +8,7 @@ import logging
 import utils.dataset_utils as du
 
 
+
 # Inicializa el logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,15 +38,19 @@ app = FastAPI()
 
 # Endpoints
 
-@app.post("/apply_cleaning")
-async def apply_cleaning_operation(request: CleaningRequest):
+@app.post("/apply_cleaning/{user_id}")
+async def apply_cleaning_operation(user_id: str, request: CleaningRequest):
     global ultimo_estado # Accede al estado global
-
+    cleaned_existe = False
     options = request.dict(exclude={'file_name', 'deshacer'})
 
     logger.info(f"Recibida petición para aplicar operaciones de limpieza de datos al dataset {request.file_name}")
+
+  
+
     logger.info(f"Obteniendo dataset con ID: {request.file_name}")
 
+    # Paso 1: Obtiene la ruta del dataset   
     try:
         logger.info(f"Buscando dataset en la base de datos con ID: {request.file_name}")
         file_location = du.get_file_path(request.file_name)
@@ -55,10 +60,25 @@ async def apply_cleaning_operation(request: CleaningRequest):
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
     
     try:
+        logger.info(f"Comprobando si existe la version limpia del dataset")
+        existing_cleaned_data_id, cleaned_file_path = du.check_cleaned_dataset(file_location)
+
+        if cleaned_file_path:
+            logger.info(f"El Dataset limpio ya existe con data_id {existing_cleaned_data_id}, evitando duplicado")
+                        # Si existe, cambiamos file_location a la versión limpia
+            cleaned_existe = True
+        else:
+            logger.info(f"El Dataset limpio no existe, continuando con la operación de limpieza")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    
+# Paso 2: Carga el dataset
+    try:
         logger.info(f"Cargando dataset con ID: {request.file_name}")
         df = await ld.load_data(file_location)
         logger.info(f"Dataset cargado con éxito, aplicando operaciones de limpieza")
-        file_path, message = dcf.data_cleaning(df, options, file_location)
+        file_path, message = dcf.data_cleaning(df, options, file_location, cleaned_existe)
 
         logger.info(f"Funcion Data cleaning completa, enviando resultado fuera de la API, Dataset ID: {request.file_name}")
         logger.info(f"Resultado: {file_path}, {message}")
@@ -66,7 +86,7 @@ async def apply_cleaning_operation(request: CleaningRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-
+    # Paso 3: Inserta el dataset limpio en la base de datos
     # Si el resultado es int64 o float64 se transforma a tipo nativo de Python (No deberia dar el caso: DEBUG)
     if isinstance(message, np.int64) or isinstance(message, np.float64):
         logger.info("Número Numpy detectado, convirtiendo a tipo nativo python")
@@ -83,23 +103,31 @@ async def apply_cleaning_operation(request: CleaningRequest):
             raise HTTPException(status_code=500, detail=str(e))
 
         
-    # Si el file_path recibido es *_cleaned.csv, se inserta en la base de datos
+    # Si el file_path recibido es *_cleaned.csv y no era *_cleaned.csv antes se inserta en la base de datos
         
     if file_path.endswith("_cleaned.csv"):
-        logger.info(f"Dataset limpio detectado, insertando en la base de datos")
-        try:
 
-            data_id = du.generate_data_id()
-            du.insert_file_mapping(data_id, file_path)
-            logger.info(f"Dataset limpio insertado en la base de datos con ID: {data_id}")
+        logger.info(f"Dataset limpio detectado, verificando si existía en la base de datos")
+
+        if cleaned_existe:
+            logger.info(f"Dataset limpio detectado, pero existía, sobreescribiendo") # Aqui hay que añadir una logica para comprobar si el user quiere sobreescribir
+            data_id = request.file_name
             return {"message": message, "data_id": data_id}
         
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+        else:
+            logger.info(f"Dataset limpio detectado, insertando en la base de datos")
+
+            try:
+
+                data_id = du.generate_data_id()
+                du.insert_file_mapping(user_id, data_id, file_path)
+                logger.info(f"Dataset limpio insertado en la base de datos con ID: {data_id}")
+                return {"message": message, "data_id": data_id}
         
-    # Si el resultado es un diccionario, se transforma para poder ser enviado
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
     
-    
+  
     logger.info(f"Dataset limpio no detectado, retornando mensaje")
 
     return {"data_id": data_id, "message": message}

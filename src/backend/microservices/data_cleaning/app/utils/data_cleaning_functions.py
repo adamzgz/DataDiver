@@ -7,14 +7,13 @@ import logging
 
 
 # Inicializa el logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 #----------------------------------------------
 # Funcion para guardar las modificaciones
 #----------------------------------------------
 
-def save_dataset_cleaned(df, file_path):
+def save_dataset_cleaned(df, file_path, cleaned_existe):
     '''Funcion para guardar un DataFrame limpio en un nuevo archivo CSV
     
     Parámetros:
@@ -28,7 +27,15 @@ def save_dataset_cleaned(df, file_path):
     # Crear una nueva ruta para el archivo limpio
     logger.info("Sustituyendo la extension del archivo original por _cleaned.csv")
     try:
-        cleaned_file_path = file_path.replace(".csv", "_cleaned.csv")
+
+    # comprueba si el archivo es _cleaned.csv
+        if cleaned_existe:
+            logger.info("El archivo ya es un archivo limpio")
+            cleaned_file_path = file_path
+        else:
+            logger.info("El archivo no es un archivo limpio")
+            cleaned_file_path = file_path.replace(".csv", "_cleaned.csv")
+            
     except Exception as error:
         return str(f'Error cambiando la ruta del archivo: {error}')
     
@@ -295,7 +302,7 @@ def treat_missing_values(df, method):
         
 
 # Funcion para comprobar la opcion de limpieza seleccionada en el frontend
-def data_cleaning(df, options, file_path):
+def data_cleaning(df, options, file_path, cleaned_existe):
 
     # Guardar el estado anterior del DataFrame para deshacer
     estado_anterior = df.copy()
@@ -343,7 +350,7 @@ def data_cleaning(df, options, file_path):
         logger.info("Datos duplicados eliminados")
 
         try:
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
 
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -395,7 +402,7 @@ def data_cleaning(df, options, file_path):
 
         logger.info("Guardando el archivo limpio en la nueva ruta")
         try:
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -416,7 +423,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -439,7 +446,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -462,7 +469,7 @@ def data_cleaning(df, options, file_path):
     
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -482,7 +489,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -506,7 +513,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -530,7 +537,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -552,7 +559,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -583,7 +590,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
 
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -606,7 +613,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -629,7 +636,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -652,7 +659,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
 
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')
@@ -675,7 +682,7 @@ def data_cleaning(df, options, file_path):
         
         try:
             logger.info("Guardando el archivo limpio en la nueva ruta")
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path)
+            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
         
         except Exception as error:
             return str(f'Error guardando el archivo limpio: {error}')

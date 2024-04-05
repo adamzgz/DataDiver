@@ -167,3 +167,40 @@ def update_file_mapping(user_id: str, file_name: str, new_file_path: str):
     logger.info("Cerrando conexión a la base de datos")
     db.close()
     return data_id
+
+# Funcion para eliminar un archivo de la base de datos
+
+def delete_from_user_datasets(data_id: str):
+    # Conectamos a la base de datos
+    db = connect_to_database()
+    cursor = db.cursor()
+
+    # Eliminamos el archivo de la tabla user_datasets
+    query = "DELETE FROM user_datasets WHERE data_id = %s"
+    cursor.execute(query, (data_id,))
+    db.commit()
+
+    # Cerramos el cursor y la conexión
+    cursor.close()
+    db.close()
+
+    return True
+
+# Funcion para eliminar un archivo de la tabla data_files
+
+def delete_from_data_id_table(data_id: str):
+    # Conectamos a la base de datos
+    db = connect_to_database()
+    cursor = db.cursor()
+
+    # Eliminamos el archivo de la tabla data_files
+    query = "DELETE FROM data_files WHERE data_id = %s"
+    cursor.execute(query, (data_id,))
+    db.commit()
+
+    # Cerramos el cursor y la conexión
+    cursor.close()
+    db.close()
+
+    return True
+

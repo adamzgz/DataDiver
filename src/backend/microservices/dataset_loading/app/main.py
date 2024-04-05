@@ -130,7 +130,36 @@ async def list_datasets_for_user(user_id: str):
 
 
 
+@app.delete("/delete-dataset/{data_id}")
+async def delete_dataset(data_id: str):
+    # Paso 1: Eliminar el archivo del almacenamiento
+    try:
+        file_path = du.get_file_path(data_id)  # Obtiene la ruta del archivo
+        if file_path and os.path.exists(file_path): # Comprueba si el archivo existe
+            os.remove(file_path) # Elimina el archivo
+            logger.info(f"Archivo {file_path} eliminado correctamente.")
+        else:
+            raise FileNotFoundError
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Archivo no encontrado.")
 
+    # Paso 2: Eliminar el data_id de la tabla user_datasets
+    try:
+        delete_result_user_datasets = du.delete_from_user_datasets(data_id)
+        if not delete_result_user_datasets:
+            raise Exception("Error al eliminar de user_datasets.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al eliminar el dataset de user_datasets: {e}")
+
+    # Paso 3: Eliminar el data_id de la tabla data_id
+    try:
+        delete_result_data_id_table = du.delete_from_data_id_table(data_id)
+        if not delete_result_data_id_table:
+            raise Exception("Error al eliminar de la tabla data_id.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al eliminar el dataset de la tabla data_id: {e}")
+
+    return {"message": "Dataset eliminado correctamente."}
 
 
 

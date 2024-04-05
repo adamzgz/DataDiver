@@ -46,3 +46,45 @@ def insert_file_mapping(user_id, data_id, file_path):
     cursor.close()
     db.close()
     logger.info(f"Dataset insertado en la base de datos con ID: {data_id}")
+
+# Funcion para comprobar si existe la version cleaned del dataset
+
+def check_cleaned_dataset(file_name):
+    db = connect_to_database()
+    cursor = db.cursor()
+    # Obtiene el nombre base del archivo sin la extensión para buscar cualquier archivo _cleaned correspondiente
+    base_file_name = file_name.rsplit('.', 1)[0] + "_cleaned"
+    try:
+        query = """
+        SELECT data_id, file_path 
+        FROM data_files 
+        WHERE file_path LIKE %s
+        """
+        cursor.execute(query, (f"%{base_file_name}%",))
+        result = cursor.fetchone()
+        if result:
+            # Devuelve el data_id y la ruta del dataset limpio si existe
+            return result
+        else:
+            return None, None
+    finally:
+        cursor.close()
+        db.close()
+
+    
+# Funcion para obtener el data-id de un dataset a partir del path del archivo
+
+def get_data_id(file_path):
+    db = connect_to_database()
+    cursor = db.cursor()
+    try:
+        # Obtiene el data_id del dataset a partir de su file_path
+        cursor.execute("SELECT data_id FROM data_files WHERE file_path = %s", (file_path,))
+        result = cursor.fetchone()
+        if result:
+            return result[0]
+        else:
+            raise FileNotFoundError(f"Fichero no encontrado en el path: {file_path}")
+    finally:
+        cursor.close()
+        db.close()

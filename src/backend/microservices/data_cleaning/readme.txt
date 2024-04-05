@@ -54,20 +54,15 @@ JSON DE prueba
 
 
 JSON de ejemplo:
-
 [
   {
-    "data_id": "ad8f15b1-3635-41e8-a672-dcb384ef8cb1",
-    "file_name": "test.csv"
-  },
-  {
-    "data_id": "b5302e99-0f40-4da9-aeeb-f151abea30ad",
-    "file_name": "diabetes.csv"
+    "data_id": "92f8a22d-4ca4-427c-918c-61c43cc146bb",
+    "file_name": "train.csv"
   }
 ]
 
 {
-  "file_name": "b5302e99-0f40-4da9-aeeb-f151abea30ad"
+  "file_name": "04413a8e-2033-4fb4-8b09-eb97ed0b1ec7"
   "check_duplicates": true,
   "remove_duplicates": true,
   "count_missing_values": true,
@@ -90,7 +85,17 @@ JSON de ejemplo:
 PRUEBAS
 
 {
-  "file_name": "b5302e99-0f40-4da9-aeeb-f151abea30ad",
-  "treat_missing_values": "mean"
-
+  "file_name": "3c5ecc17-9c3d-4053-856c-3bcd01ab4d53",
+  "outliers": "remove"
 }
+
+[
+  {
+    "data_id": "3c5ecc17-9c3d-4053-856c-3bcd01ab4d53",
+    "file_name": "test.csv"
+  },
+  {
+    "data_id": "f72fd2fd-296b-4288-bc59-af00c59246dc",
+    "file_name": "test_cleaned.csv"
+  }
+]
