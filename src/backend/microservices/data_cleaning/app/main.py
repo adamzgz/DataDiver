@@ -1,17 +1,16 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import utils.load_dataset as ld
+import backend.microservices.data_cleaning.app.utils.dataset_utils as ld
 import utils.data_cleaning_functions as dcf
 from typing import Optional, List, Dict
 import numpy as np
-import logging
-import utils.dataset_utils as du
+import utils.database_utils as du
+from logging_config import setup_logging
 
 
 
 # Inicializa el logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = setup_logging()
 
 
 class CleaningRequest(BaseModel):
@@ -44,10 +43,7 @@ async def apply_cleaning_operation(user_id: str, request: CleaningRequest):
     cleaned_existe = False
     options = request.dict(exclude={'file_name', 'deshacer'})
 
-    logger.info(f"Recibida petición para aplicar operaciones de limpieza de datos al dataset {request.file_name}")
-
-  
-
+    logger.info(f"Recibida petición para aplicar operaciones de limpieza de datos al dataset {request.file_name}") 
     logger.info(f"Obteniendo dataset con ID: {request.file_name}")
 
     # Paso 1: Obtiene la ruta del dataset   

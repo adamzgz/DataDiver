@@ -19,5 +19,12 @@ services:
     ports:
       - "8002:80"
 
+  data_modelling:
+    build: ./backend/microservices/data_modelling
+    ports:
+      - "8003:8000"
+    volumes:
+      - data_volume:/files/
+
 volumes:
   data_volume:
