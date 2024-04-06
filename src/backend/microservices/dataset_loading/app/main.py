@@ -5,10 +5,9 @@ import logging
 from typing import List
 from pydantic import BaseModel
 import utils.dataset_utils as du
+from utils.file_utils import is_file_type_allowed
 from fastapi.middleware.cors import CORSMiddleware
-
-
-
+from config import FILE_STORAGE_PATH
 
 # Inicializa el logging
 logging.basicConfig(level=logging.INFO)
@@ -36,30 +35,29 @@ app.add_middleware(
 #Endpoint para subir un archivo y almacenarlo en el servidor (Falta implementar el LOGGING)
 
 @app.post("/upload-dataset/{user_id}")
-async def upload_dataset(
-    user_id: str, 
-    file: UploadFile = File(...), 
-    overwrite: str = Form("false")
-):
+async def upload_dataset(user_id: str, file: UploadFile = File(...), overwrite: str = Form("false")):
+
+    # comprobamos si overwrite es true o false ya que viene como string
     overwrite_bool = overwrite.lower() == "true"
 
+    # ruta de almacenamiento
+    storage_path = f"{FILE_STORAGE_PATH}/{user_id}"
+
+    # Logging
     logger.info(f"Valor de overwrite recibido: {overwrite}")
-
     logger.info(f"Subiendo archivo {file.filename} para el usuario {user_id}")
-    # Ruta donde se almacenarán los archivos
-    storage_path = f"/files/{user_id}"
+  
+    
 
-
-    # Crear la carpeta si no existe
-    logger.info(f"Creando carpeta de almacenamiento en {storage_path}")
+    # Comprueba si la carpeta de almacenamiento existe, si no, la crea
     if not os.path.exists(storage_path):
         os.makedirs(storage_path)
+        logger.info(f"Creando carpeta de almacenamiento en {storage_path}")
 
     # Ruta al archivo final
     file_location = f"{storage_path}/{file.filename}"
 
     # Verificar si el archivo ya existe
-
     logger.info(f"Verificando si el archivo ya existe")
     logger.info(f"El archivo es {file.filename}")
 
@@ -67,25 +65,27 @@ async def upload_dataset(
 
     logger.info(f"El archivo ya existe: {existing_file}")
     logger.info(f"La opcion de sobreescribir es: {overwrite_bool}")
+
     # Si el archivo ya existe y no se ha confirmado la sobrescritura, devuelve un mensaje para confirmar
     if existing_file and not overwrite_bool:
-        
         logger.info("El archivo ya existe. Se requiere confirmación para sobreescribir")
         raise HTTPException(status_code=351, detail="El archivo ya existe. ¿Desea sobreescribir?")
 
-
     # Si el archivo es un CSV, Excel o JSON, lo guardamos en el servidor
     logger.info(f"Verificando el formato del archivo")
-    if file.content_type in ["text/csv", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/json"]:
+    if is_file_type_allowed(file.content_type):
+
         try:
             # Guardar el archivo en el servidor
             logger.info(f"Guardando el archivo en {file_location}")
             with open(file_location, "wb+") as file_object:
                 shutil.copyfileobj(file.file, file_object)
+
             logger.info("Archivo guardado correctamente")
 
             # Si estamos sobreescribiendo, actualizamos la entrada existente en lugar de crear una nueva
             logger.info("Comprobando si se está sobreescribiendo")
+
             if existing_file:
                 logger.info("Actualizando la entrada existente en la base de datos")
                 data_id = du.update_file_mapping(user_id, file.filename, file_location)
@@ -96,10 +96,8 @@ async def upload_dataset(
                 data_id = du.generate_data_id()
                 du.insert_file_mapping(user_id, data_id, file_location)
 
-            message = "Archivo subido correctamente"
-
             # Devolver el ID del archivo y un mensaje de confirmación
-            return {"data_id": data_id, "message": message}
+            return {"data_id": data_id, "message": "Archivo subido correctamente"}
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al guardar el archivo: {e}")

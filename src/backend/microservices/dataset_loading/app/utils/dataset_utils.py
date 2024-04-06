@@ -2,56 +2,43 @@ import uuid
 from database import connect_to_database
 import logging
 import os
+from contextlib import closing
 
 # Inicializa el logging
 logger = logging.getLogger(__name__)
 
 
-# Función para generar un ID único para cada dataset
-def generate_data_id() -> str:
-    return str(uuid.uuid4())
+# Función para obtener la ruta de un dataset a partir de su ID
+
+def get_file_path(data_id: int) -> str:
+    query = "SELECT file_path FROM data_files WHERE data_id = %s"
+    with connect_to_database() as db:
+        with db.cursor() as cursor:
+            cursor.execute(query, (data_id,))
+            result = cursor.fetchone()
+            if result:
+                return result[0]
+            else:
+                logger.error(f"Archivo no encontrado con el data id: {data_id}")
+                raise FileNotFoundError(f"Fichero no encontrado con el data id: {data_id}")
+
+
 
 
 # Función para insertar un nuevo dataset en la base de datos
-def insert_file_mapping(user_id, data_id, file_path):
-    db = connect_to_database()
-    cursor = db.cursor()
-    # Inserta el nuevo dataset en data_files
-    cursor.execute(
-        "INSERT INTO data_files (data_id, file_path) VALUES (%s, %s)",
-        (data_id, file_path)
-    )
-    db.commit()
+def insert_file_mapping(user_id: str, file_path: str) -> int:
+    query_data_files = "INSERT INTO data_files (file_path) VALUES (%s)"
+    query_user_datasets = "INSERT INTO user_datasets (user_id, data_id) VALUES (%s, LAST_INSERT_ID())"
+    
+    with connect_to_database() as db:
+        with db.cursor() as cursor:
+            cursor.execute(query_data_files, (file_path,))
+            db.commit()
+            cursor.execute(query_user_datasets, (user_id,))
+            db.commit()
+    return cursor.lastrowid
 
-    # Ahora, asocia este dataset con el user_id en la tabla user_datasets
-    cursor.execute(
-        "INSERT INTO user_datasets (user_id, data_id) VALUES (%s, %s)",
-        (user_id, data_id)
-    )
-    db.commit()
 
-    cursor.close()
-    db.close()
-
-# Función para obtener la ruta de un dataset a partir de su ID
-def get_file_path(data_id):
-    logger.info(f"Obteniendo ruta del archivo para el data_id: {data_id}")
-    db = connect_to_database()
-    cursor = db.cursor()
-    try:
-        logger.info("Ejecutando query para obtener la ruta del archivo")
-        cursor.execute("SELECT file_path FROM data_files WHERE data_id = %s", (data_id,))
-        logger.info("Obteniendo resultado de la query")
-        result = cursor.fetchone()
-        if result:
-            logger.info(f"Ruta del archivo encontrada: {result[0]}")
-            return result[0]
-        else:
-            logger.error(f"Archivo no encontrado en el data id: {data_id}")
-            raise FileNotFoundError(f"Fichero no encontrado en el data id: {data_id}")
-    finally:
-        cursor.close()
-        db.close()
 
 # Funcion para obtener listado de archivos de la base de datos
 def get_files_list(user_id):
