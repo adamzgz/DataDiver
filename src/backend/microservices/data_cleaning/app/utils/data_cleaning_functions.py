@@ -9,19 +9,16 @@ from normalization_utils import normalize_min_max, estandarizacion
 from outliers_utils import outliers
 from missing_values_utils import treat_missing_values
 
-
 # Inicializa el logging
 logger = setup_logging()
 
 # ----------------------------------------------
 # Funcion CORE
 # ----------------------------------------------
+        
 
 # Funcion para comprobar la opcion de limpieza seleccionada en el frontend
 def data_cleaning(df, options, file_path, cleaned_existe):
-
-    # Guardar el estado anterior del DataFrame para deshacer
-    estado_anterior = df.copy()
 
     '''Funcion general para limpiar un DataFrame de acuerdo a las opciones seleccionadas.
     
@@ -55,23 +52,14 @@ def data_cleaning(df, options, file_path, cleaned_existe):
     # Eliminar valores duplicados, si remove_duplicates es True
         
     if options.get('remove_duplicates'):
-
-        logger.info("Inicio de la funcion remove_duplicates")
+        logger.info("Inicio de la funcion remove_duplicates...")
         try:
             df, message = remove_duplicates(df)
-
         except Exception as error:
             return str(f'Error eliminando datos duplicados: {error}')
-        
         logger.info("Datos duplicados eliminados")
 
-        try:
-            cleaned_dataset_path = save_dataset_cleaned(df, file_path,cleaned_existe)
-
-        except Exception as error:
-            return str(f'Error guardando el archivo limpio: {error}')
-
-        return cleaned_dataset_path, message
+        return df, message
     
     
     # Contar valores nulos
