@@ -1,13 +1,12 @@
 from pydantic import BaseModel, EmailStr
-from datetime import timedelta
 import dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
-from database import connect_to_database, create_user, close_db_connection, create_access_token, authenticate_user
-from fastapi import Depends, FastAPI
-from datetime import timedelta
-from config import ACCESS_TOKEN_EXPIRE_MINUTES
+from database import connect_to_database, create_user, close_db_connection, create_access_token, authenticate_user, create_refresh_token
+from fastapi import Depends, FastAPI, Body, HTTPException, status
+from config import SECRET_KEY, ALGORITHM
+from jose import JWTError, jwt
 
 dotenv.load_dotenv('token.env')
 
@@ -25,6 +24,8 @@ app = FastAPI()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @app.post("/register/")
+
+
 def register(user: UserCreate):
     db = connect_to_database()
     if db is None:
@@ -42,14 +43,29 @@ def register(user: UserCreate):
 
 
 @app.post("/login/")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
-        raise HTTPException(status_code=400, detail="Incorrect email or password")
-    
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user['email']}, expires_delta=access_token_expires
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    access_token = create_access_token(data={"sub": str(user["user_id"])})
+    refresh_token = create_refresh_token(data={"sub": str(user["user_id"])})
+    return {"access_token": access_token, "token_type": "bearer", "refresh_token": refresh_token}
+
+
+
+@app.post("/token/refresh/")
+def refresh_access_token(refresh_token: str = Body(...)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
     )
-    
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    access_token = create_access_token(data={"sub": username})
     return {"access_token": access_token, "token_type": "bearer"}

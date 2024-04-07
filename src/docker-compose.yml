@@ -7,6 +7,11 @@ services:
     volumes:
       - data_volume:/files/
 
+  data_login:
+    build: ./backend/microservices/data_login
+    ports:
+      - "8004:8000"
+
   data_cleaning:
     build: ./backend/microservices/data_cleaning
     ports:
