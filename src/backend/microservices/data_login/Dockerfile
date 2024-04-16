@@ -14,8 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the contents of the local app directory to /app inside the container
 COPY app/ .
 
-# Expose port 8000 for the application
-EXPOSE 8001
+# Expose port 8003 for the application
+EXPOSE 8004
 
 # Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]

@@ -1,0 +1,12 @@
+joblib
+pydantic
+fastapi
+uvicorn
+pandas
+scikit-learn
+xgboost
+lightgbm
+catboost
+joblib
+pandas  # Asumiendo que estás utilizando DataFrames de Pandas para manejar tus datasets
+numpy  # A menudo necesario para el manejo de arrays y operaciones matemáticas
